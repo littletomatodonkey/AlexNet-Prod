@@ -11,3 +11,4 @@ pretrained/
 _build/
 build/
 nohup.out
+.DS_Store

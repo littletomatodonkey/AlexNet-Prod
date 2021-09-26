@@ -10,7 +10,7 @@ pretrained/
 *.ipynb*
 _build/
 build/
-nohup.out
+*nohup.out*
 .DS_Store
 *.pdparams
 *.npy

@@ -1,0 +1,3 @@
+2021-09-26 10:12:29,331 - reprod_log.utils - INFO - Init logger done!
+2021-09-26 10:12:29,331 - reprod_log.utils - INFO - ********************
+2021-09-26 10:12:29,331 - reprod_log.utils - INFO - mean diff of logits:	 0.0

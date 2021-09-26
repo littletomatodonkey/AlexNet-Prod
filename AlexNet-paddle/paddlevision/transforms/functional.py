@@ -166,7 +166,7 @@ def normalize(tensor: Tensor,
         mean = mean.reshape((-1, 1, 1))
     if std.ndim == 1:
         std = std.reshape((-1, 1, 1))
-    tensor.subtract(mean).divide(std)
+    tensor = tensor.subtract(mean).divide(std)
     return tensor
 
 

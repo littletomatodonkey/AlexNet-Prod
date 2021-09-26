@@ -12,3 +12,7 @@ _build/
 build/
 nohup.out
 .DS_Store
+*.pdparams
+*.npy
+*.data
+*.log

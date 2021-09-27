@@ -185,16 +185,19 @@ def main(args):
 
     criterion = nn.CrossEntropyLoss()
 
+    lr_scheduler = paddle.optimizer.lr.StepDecay(
+        args.lr, step_size=args.lr_step_size, gamma=args.lr_gamma)
+
     opt_name = args.opt.lower()
     if opt_name == 'sgd':
         optimizer = paddle.optimizer.Momentum(
-            learning_rate=args.lr,
+            learning_rate=lr_scheduler,
             momentum=args.momentum,
             parameters=model.parameters(),
             weight_decay=args.weight_decay)
     elif opt_name == 'rmsprop':
         optimizer = paddle.optimizer.RMSprop(
-            learning_rate=args.lr,
+            learning_rate=lr_scheduler,
             momentum=args.momentum,
             parameters=model.parameters(),
             weight_decay=args.weight_decay,
@@ -204,9 +207,6 @@ def main(args):
         raise RuntimeError(
             "Invalid optimizer {}. Only SGD and RMSprop are supported.".format(
                 args.opt))
-
-    lr_scheduler = paddle.optimizer.lr.StepDecay(
-        args.lr, step_size=args.lr_step_size, gamma=args.lr_gamma)
 
     model_without_ddp = model
 

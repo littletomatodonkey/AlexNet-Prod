@@ -6,6 +6,7 @@ from paddlevision.models.alexnet import alexnet
 from reprod_log import ReprodLogger
 
 if __name__ == "__main__":
+    paddle.set_device("cpu")
     # load model
     # the model is save into ~/.cache/torch/hub/checkpoints/alexnet-owt-4df8aa71.pth
 

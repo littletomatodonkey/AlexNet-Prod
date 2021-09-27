@@ -16,3 +16,4 @@ build/
 *.npy
 *.data
 *.log
+*.pth

@@ -33,14 +33,10 @@ class AlexNet(nn.Layer):
                 kernel_size=3, stride=2), )
         self.avgpool = nn.AdaptiveAvgPool2D((6, 6))
         self.classifier = nn.Sequential(
-            # use liner to replace dropout cause it can not work when is_test=True
-            nn.LeakyReLU(negative_slope=1),
-            # nn.Dropout(),
+            nn.Dropout(),
             nn.Linear(256 * 6 * 6, 4096),
             nn.ReLU(),
-            # use liner to replace dropout cause it can not work when is_test=True
-            # nn.Dropout(),
-            nn.LeakyReLU(negative_slope=1),
+            nn.Dropout(),
             nn.Linear(4096, 4096),
             nn.ReLU(),
             nn.Linear(4096, num_classes), )

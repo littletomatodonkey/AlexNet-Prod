@@ -1,0 +1,9 @@
+ujson
+opencv-python==4.4.0.46
+pillow
+tqdm
+PyYAML
+scipy
+scikit-learn==0.23.2
+gast==0.3.3
+git+https://github.com/WenmuZhou/reprod_log.git

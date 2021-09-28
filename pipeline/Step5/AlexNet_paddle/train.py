@@ -114,7 +114,13 @@ def load_data(traindir, valdir, args):
             crop_size=crop_size, resize_size=resize_size))
 
     print("Creating data loaders")
-    train_sampler = paddle.io.RandomSampler(dataset)
+    train_sampler = paddle.io.DistributedBatchSampler(
+        dataset=dataset,
+        batch_size=args.batch_size,
+        shuffle=True,
+        drop_last=False)
+    # train_sampler = paddle.io.RandomSampler(dataset)
+
     test_sampler = paddle.io.SequenceSampler(dataset_test)
 
     return dataset, dataset_test, train_sampler, test_sampler
@@ -128,14 +134,22 @@ def main(args):
 
     device = paddle.device.set_device(args.device)
 
+    # multi cards
+    if paddle.distributed.get_world_size() > 1:
+        paddle.distributed.init_parallel_env()
+
     train_dir = os.path.join(args.data_path, 'train')
     val_dir = os.path.join(args.data_path, 'val')
     dataset, dataset_test, train_sampler, test_sampler = load_data(
         train_dir, val_dir, args)
-    train_batch_sampler = paddle.io.BatchSampler(
-        sampler=train_sampler, batch_size=args.batch_size)
+    train_batch_sampler = train_sampler
+    # train_batch_sampler = paddle.io.BatchSampler(
+    #     sampler=train_sampler, batch_size=args.batch_size)
     data_loader = paddle.io.DataLoader(
-        dataset, batch_sampler=train_batch_sampler, num_workers=args.workers)
+        dataset=dataset,
+        num_workers=args.workers,
+        return_list=True,
+        batch_sampler=train_batch_sampler)
     test_batch_sampler = paddle.io.BatchSampler(
         sampler=test_sampler, batch_size=args.batch_size)
     data_loader_test = paddle.io.DataLoader(
@@ -172,15 +186,17 @@ def main(args):
             "Invalid optimizer {}. Only SGD and RMSprop are supported.".format(
                 args.opt))
 
-    model_without_ddp = model
-
     if args.resume:
         layer_state_dict = paddle.load(os.path.join(args.resume, '.pdparams'))
-        model_without_ddp.set_state_dict(layer_state_dict)
+        model.set_state_dict(layer_state_dict)
         opt_state_dict = paddle.load(os.path.join(args.resume, '.pdopt'))
         optimizer.load_state_dict(opt_state_dict)
 
-    if args.test_only:
+    # multi cards
+    if paddle.distributed.get_world_size() > 1:
+        model = paddle.DataParallel(model)
+
+    if args.test_only and paddle.distributed.get_rank() == 0:
         top1 = evaluate(model, criterion, data_loader_test, device=device)
         return top1
 
@@ -191,15 +207,16 @@ def main(args):
         train_one_epoch(model, criterion, optimizer, data_loader, device,
                         epoch, args.print_freq, args.apex)
         lr_scheduler.step()
-        top1 = evaluate(model, criterion, data_loader_test, device=device)
-        best_top1 = max(best_top1, top1)
-        if args.output_dir:
-            paddle.save(model.state_dict(),
-                        os.path.join(args.output_dir,
-                                     'model_{}.pdparams'.format(epoch)))
-            paddle.save(optimizer.state_dict(),
-                        os.path.join(args.output_dir,
-                                     'model_{}.pdopt'.format(epoch)))
+        if paddle.distributed.get_rank() == 0:
+            top1 = evaluate(model, criterion, data_loader_test, device=device)
+            best_top1 = max(best_top1, top1)
+            if args.output_dir:
+                paddle.save(model.state_dict(),
+                            os.path.join(args.output_dir,
+                                         'model_{}.pdparams'.format(epoch)))
+                paddle.save(optimizer.state_dict(),
+                            os.path.join(args.output_dir,
+                                         'model_{}.pdopt'.format(epoch)))
 
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))
@@ -302,6 +319,7 @@ def get_args_parser(add_help=True):
 if __name__ == "__main__":
     args = get_args_parser().parse_args()
     top1 = main(args)
-    reprod_logger = ReprodLogger()
-    reprod_logger.add("top1", np.array([top1]))
-    reprod_logger.save("train_align_paddle.npy")
+    if paddle.distributed.get_rank() == 0:
+        reprod_logger = ReprodLogger()
+        reprod_logger.add("top1", np.array([top1]))
+        reprod_logger.save("train_align_paddle.npy")

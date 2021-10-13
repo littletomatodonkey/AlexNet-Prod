@@ -89,8 +89,11 @@ def train_some_iters(model,
 
         output = model(image)
         loss = criterion(output, target)
-
         loss.backward()
+        # for name, tensor in model.named_parameters():
+        #     grad = tensor.grad
+        #     print(name, tensor.grad.shape)
+        #     break
         optimizer.step()
         optimizer.clear_grad()
         loss_list.append(loss)

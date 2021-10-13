@@ -59,8 +59,7 @@ def test_lr_opt():
 
     paddle_lr_list = []
     torch_lr_list = []
-
-    # random choose 5 images and check
+    
     for idx in range(90):
         paddle_lr_list.append(paddle_lr.get_lr())
         torch_lr_list.append(torch_lr.get_lr())

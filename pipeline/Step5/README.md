@@ -3,6 +3,7 @@
 首先运行下面的python代码，生成`train_align_benchmark.npy`文件，作为训练对齐的基准文件。
 
 ```python
+# top1-acc 指标来源：https://pytorch.org/hub/pytorch_vision_alexnet/
 import numpy as np
 reprod_logger = ReprodLogger()
 reprod_logger.add("top1", np.array([0.5655], dtype="float32"))

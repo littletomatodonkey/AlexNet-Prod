@@ -8,6 +8,16 @@
 python test_lr.py
 ```
 
+最终输出内容如下。
+
+```
+[2021/10/13 13:21:58] root INFO: lr: 
+[2021/10/13 13:21:58] root INFO:        mean diff: check passed: True, value: 0.0
+[2021/10/13 13:21:58] root INFO: diff check passed
+```
+
+90个epoch的学习率diff为0，check通过。
+
 
 ### 反向对齐操作方法
 

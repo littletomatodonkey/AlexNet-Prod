@@ -8,4 +8,4 @@ if __name__ == "__main__":
 
     diff_helper.compare_info(benchmark_info, paddle_info)
 
-    diff_helper.report(path="train_align_diff.log")
+    diff_helper.report(path="train_align_diff.log", diff_threshold=0.0015)

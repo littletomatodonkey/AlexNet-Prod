@@ -39,6 +39,71 @@ python test_data.py
 
 ## 数据评估对齐流程
 
+### 评估代码和修改内容说明
+
+Pytorch准确率评估指标代码如下。
+
+```python
+# https://github.com/littletomatodonkey/AlexNet-Prod/blob/ea49142949e891e2523d5c44e01539900d5b6e70/pipeline/Step2/AlexNet_torch/utils.py#L162
+def accuracy(output, target, topk=(1, )):
+    """Computes the accuracy over the k top predictions for the specified values of k"""
+    with torch.no_grad():
+        maxk = max(topk)
+        batch_size = target.size(0)
+
+        _, pred = output.topk(maxk, 1, True, True)
+        pred = pred.t()
+        correct = pred.eq(target[None])
+
+        res = []
+        for k in topk:
+            correct_k = correct[:k].flatten().sum(dtype=torch.float32)
+            res.append(correct_k * (100.0 / batch_size))
+        return res
+```
+
+对应地，PaddlePaddle评估指标代码如下
+
+```python
+# https://github.com/littletomatodonkey/AlexNet-Prod/blob/master/pipeline/Step2/AlexNet_paddle/utils.py#L145
+def accuracy(output, target, topk=(1, )):
+    """Computes the accuracy over the k top predictions for the specified values of k"""
+    with paddle.no_grad():
+        maxk = max(topk)
+        batch_size = target.shape[0]
+
+        _, pred = output.topk(maxk, 1, True, True)
+        pred = pred.t()
+        correct = pred.equal(target)
+
+        res = []
+        for k in topk:
+            correct_k = correct.astype(paddle.int32)[:k].flatten().sum(
+                dtype='float32')
+            res.append(correct_k * (100.0 / batch_size))
+        return res
+```
+
+具体地，对于AlexNet复现，找到其中的预测评估逻辑，在评估完成之后获取返回值，记录在`metric_paddle.npy`文件中（代码中已经修改好了，这里仅用于说明，无需重复修改）。
+
+```python
+...
+def main(args):
+    if args.test_only:
+        top1 = evaluate(model, criterion, data_loader_test, device=device)
+        return top1
+...
+# 打开main test-only选项，仅测试评估流程
+if __name__ == "__main__":
+    args = get_args_parser().parse_args()
+    top1 = main(args)
+    reprod_logger = ReprodLogger()
+    reprod_logger.add("top1", np.array([top1]))
+    reprod_logger.save("metric_paddle.npy")
+```
+
+### 操作步骤
+
 运行下面的命令，验证数据集评估是否正常。
 
 ```shell

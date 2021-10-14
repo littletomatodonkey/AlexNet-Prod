@@ -40,7 +40,7 @@ fake_data = paddle.to_tensor(fake_data)
 # 模型前向
 out = model(fake_data)
 # 保存前向结果，对于不同的任务，需要开发者添加。
-reprod_logger.add("logits", fake_data.cpu().detach().numpy())
+reprod_logger.add("logits", out.cpu().detach().numpy())
 reprod_logger.save("forward_paddle.npy")
 ```
 

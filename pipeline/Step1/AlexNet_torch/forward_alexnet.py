@@ -20,5 +20,5 @@ if __name__ == "__main__":
     # forward
     out = model(fake_data)
     # 
-    reprod_logger.add("logits", fake_data.cpu().detach().numpy())
+    reprod_logger.add("logits", out.cpu().detach().numpy())
     reprod_logger.save("forward_torch.npy")

@@ -61,9 +61,9 @@ if __name__ == "__main__":
 产出日志如下，同时会将check的结果保存在`forward_diff.log`文件中。
 
 ```
-2021-09-27 10:35:46,172 - reprod_log.utils - INFO - logits:
-2021-09-27 10:35:46,173 - reprod_log.utils - INFO -     mean diff: check passed: True, value: 0.0
-2021-09-27 10:35:46,173 - reprod_log.utils - INFO - diff check passed
+[2021/10/14 18:09:15] root INFO: logits:
+[2021/10/14 18:09:15] root INFO:    mean diff: check passed: True, value: 5.600350050372072e-07
+[2021/10/14 18:09:15] root INFO: diff check passed
 ```
 
-平均绝对误差为0，测试通过。
+平均绝对误差为5.6e-7，测试通过。

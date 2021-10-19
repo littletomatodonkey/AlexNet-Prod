@@ -1,7 +1,10 @@
 import os
+import math
 import paddle
 import paddle.nn as nn
 from typing import Any
+from paddle import ParamAttr
+from paddle.nn.initializer import Uniform
 
 __all__ = ['AlexNet', 'alexnet']
 
@@ -11,35 +14,75 @@ class AlexNet(nn.Layer):
         super().__init__()
         self.features = nn.Sequential(
             nn.Conv2D(
-                3, 64, kernel_size=11, stride=4, padding=2),
+                3,
+                64,
+                kernel_size=11,
+                stride=4,
+                padding=2,
+                weight_attr=ParamAttr(initializer=self.uniform_init(3 * 11 *
+                                                                    11))),
             nn.ReLU(),
             nn.MaxPool2D(
                 kernel_size=3, stride=2),
             nn.Conv2D(
-                64, 192, kernel_size=5, padding=2),
+                64,
+                192,
+                kernel_size=5,
+                padding=2,
+                weight_attr=ParamAttr(initializer=self.uniform_init(64 * 5 *
+                                                                    5))),
             nn.ReLU(),
             nn.MaxPool2D(
                 kernel_size=3, stride=2),
             nn.Conv2D(
-                192, 384, kernel_size=3, padding=1),
+                192,
+                384,
+                kernel_size=3,
+                padding=1,
+                weight_attr=ParamAttr(initializer=self.uniform_init(192 * 3 *
+                                                                    4))),
             nn.ReLU(),
             nn.Conv2D(
-                384, 256, kernel_size=3, padding=1),
+                384,
+                256,
+                kernel_size=3,
+                padding=1,
+                weight_attr=ParamAttr(initializer=self.uniform_init(384 * 3 *
+                                                                    3))),
             nn.ReLU(),
             nn.Conv2D(
-                256, 256, kernel_size=3, padding=1),
+                256,
+                256,
+                kernel_size=3,
+                padding=1,
+                weight_attr=ParamAttr(initializer=self.uniform_init(256 * 3 *
+                                                                    3))),
             nn.ReLU(),
             nn.MaxPool2D(
                 kernel_size=3, stride=2), )
         self.avgpool = nn.AdaptiveAvgPool2D((6, 6))
         self.classifier = nn.Sequential(
             nn.Dropout(),
-            nn.Linear(256 * 6 * 6, 4096),
+            nn.Linear(
+                256 * 6 * 6,
+                4096,
+                weight_attr=ParamAttr(initializer=self.uniform_init(256 * 6 *
+                                                                    6))),
             nn.ReLU(),
             nn.Dropout(),
-            nn.Linear(4096, 4096),
+            nn.Linear(
+                4096,
+                4096,
+                weight_attr=ParamAttr(initializer=self.uniform_init(4096))),
             nn.ReLU(),
-            nn.Linear(4096, num_classes), )
+            nn.Linear(
+                4096,
+                num_classes,
+                weight_attr=ParamAttr(initializer=self.uniform_init(4096))), )
+
+    def uniform_init(self, num):
+        stdv = 1.0 / math.sqrt(num)
+        return Uniform(-stdv, stdv)
 
     def forward(self, x: paddle.Tensor) -> paddle.Tensor:
         x = self.features(x)

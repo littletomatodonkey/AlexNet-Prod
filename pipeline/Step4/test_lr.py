@@ -39,17 +39,6 @@ def build_torch_opt():
 
 
 def test_lr_opt():
-    paddle_transform = build_paddle_transform()
-    torch_transform = build_torch_transform()
-    img = Image.open("./demo_image/ILSVRC2012_val_00006697.JPEG")
-
-    paddle_img = paddle_transform(img)
-    torch_img = torch_transform(img)
-
-    np.testing.assert_allclose(paddle_img, torch_img)
-
-
-def test_lr_opt():
     diff_helper = ReprodDiffHelper()
     paddle_lr, paddle_opt = build_paddle_opt()
     torch_lr, torch_opt = build_torch_opt()

@@ -132,7 +132,7 @@ def main(args):
 
     print(args)
 
-    device = paddle.device.set_device(args.device)
+    device = paddle.set_device(args.device)
 
     # multi cards
     if paddle.distributed.get_world_size() > 1:
@@ -217,6 +217,12 @@ def main(args):
                 paddle.save(optimizer.state_dict(),
                             os.path.join(args.output_dir,
                                          'model_{}.pdopt'.format(epoch)))
+                paddle.save(model.state_dict(),
+                            os.path.join(args.output_dir,
+                                         'latest.pdparams'.format(epoch)))
+                paddle.save(optimizer.state_dict(),
+                            os.path.join(args.output_dir,
+                                         'latest.pdopt'.format(epoch)))
 
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))

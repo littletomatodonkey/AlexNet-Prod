@@ -105,12 +105,12 @@ def make_dataset(
             #     print(fname)
             # exit()
 
-    empty_classes = set(class_to_idx.keys()) - available_classes
-    if empty_classes:
-        msg = f"Found no valid file for the classes {', '.join(sorted(empty_classes))}. "
-        if extensions is not None:
-            msg += f"Supported extensions are: {', '.join(extensions)}"
-        raise FileNotFoundError(msg)
+            # empty_classes = set(class_to_idx.keys()) - available_classes
+            # if empty_classes:
+            #     msg = f"Found no valid file for the classes {', '.join(sorted(empty_classes))}. "
+            #     if extensions is not None:
+            #         msg += f"Supported extensions are: {', '.join(extensions)}"
+            #     raise FileNotFoundError(msg)
 
     return instances
 

@@ -6,6 +6,8 @@ import os
 import sys
 import numpy as np
 
+paddle.set_device("cpu")
+
 __dir__ = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.abspath(os.path.join(__dir__, '../')))
 

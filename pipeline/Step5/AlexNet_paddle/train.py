@@ -1,5 +1,6 @@
 import datetime
 import os
+import sys
 import time
 
 import paddle
@@ -12,10 +13,7 @@ import utils
 import numpy as np
 import random
 
-try:
-    from apex import amp
-except ImportError:
-    amp = None
+apex = None
 
 import numpy as np
 from reprod_log import ReprodLogger
@@ -30,36 +28,48 @@ def train_one_epoch(model,
                     print_freq,
                     apex=False):
     model.train()
-    metric_logger = utils.MetricLogger(delimiter="  ")
-    metric_logger.add_meter(
-        'lr', utils.SmoothedValue(
-            window_size=1, fmt='{value}'))
-    metric_logger.add_meter(
-        'img/s', utils.SmoothedValue(
-            window_size=10, fmt='{value}'))
+    # training log
+    train_reader_cost = 0.0
+    train_run_cost = 0.0
+    total_samples = 0
+    acc1 = 0.0
+    acc5 = 0.0
+    reader_start = time.time()
+    batch_past = 0
 
-    header = 'Epoch: [{}]'.format(epoch)
-    for image, target in metric_logger.log_every(data_loader, print_freq,
-                                                 header):
-        start_time = time.time()
+    for batch_idx, (image, target) in enumerate(data_loader):
+        train_reader_cost += time.time() - reader_start
+        train_start = time.time()
         output = model(image)
         loss = criterion(output, target)
-
-        if apex:
-            with amp.scale_loss(loss, optimizer) as scaled_loss:
-                scaled_loss.backward()
-        else:
-            loss.backward()
+        loss.backward()
         optimizer.step()
         optimizer.clear_grad()
+        train_run_cost += time.time() - train_start
+        acc = utils.accuracy(output, target, topk=(1, 5))
+        acc1 += acc[0].item()
+        acc5 += acc[1].item()
+        total_samples += image.shape[0]
+        batch_past += 1
 
-        acc1, acc5 = utils.accuracy(output, target, topk=(1, 5))
-        batch_size = image.shape[0]
-        metric_logger.update(loss=loss.item(), lr=optimizer.get_lr())
-        metric_logger.meters['acc1'].update(acc1.item(), n=batch_size)
-        metric_logger.meters['acc5'].update(acc5.item(), n=batch_size)
-        metric_logger.meters['img/s'].update(batch_size /
-                                             (time.time() - start_time))
+        if batch_idx > 0 and batch_idx % print_freq == 0:
+            msg = "[Epoch {}, iter: {}] top1: {:.5f}%, top5: {:.5f}%, lr: {:.5f}, loss: {:.5f}, avg_reader_cost: {:.5f} sec, avg_batch_cost: {:.5f} sec, avg_samples: {}, avg_ips: {:.5f} images/sec.".format(
+                epoch, batch_idx, acc1 / batch_past, acc5 / batch_past,
+                optimizer.get_lr(),
+                loss.item(), train_reader_cost / batch_past,
+                (train_reader_cost + train_run_cost) / batch_past,
+                total_samples / batch_past,
+                total_samples / (train_reader_cost + train_run_cost))
+            print(msg)
+            sys.stdout.flush()
+            train_reader_cost = 0.0
+            train_run_cost = 0.0
+            total_samples = 0
+            acc1 = 0.0
+            acc5 = 0.0
+            batch_past = 0
+
+        reader_start = time.time()
 
 
 def evaluate(model, criterion, data_loader, device, print_freq=100):
@@ -203,6 +213,7 @@ def main(args):
     print("Start training")
     start_time = time.time()
     best_top1 = 0.0
+
     for epoch in range(args.start_epoch, args.epochs):
         train_one_epoch(model, criterion, optimizer, data_loader, device,
                         epoch, args.print_freq, args.apex)

@@ -110,16 +110,10 @@ class MetricLogger(object):
         iter_time = SmoothedValue(fmt='{avg:.4f}')
         data_time = SmoothedValue(fmt='{avg:.4f}')
         space_fmt = ':' + str(len(str(len(iterable)))) + 'd'
-        if paddle.device.is_compiled_with_cuda():
-            log_msg = self.delimiter.join([
-                header, '[{0' + space_fmt + '}/{1}]', 'eta: {eta}', '{meters}',
-                'time: {time}', 'data: {data}'
-            ])
-        else:
-            log_msg = self.delimiter.join([
-                header, '[{0' + space_fmt + '}/{1}]', 'eta: {eta}', '{meters}',
-                'time: {time}', 'data: {data}'
-            ])
+        log_msg = self.delimiter.join([
+            header, '[{0' + space_fmt + '}/{1}]', 'eta: {eta}', '{meters}',
+            'time: {time}', 'data: {data}'
+        ])
         for obj in iterable:
             data_time.update(time.time() - end)
             yield obj

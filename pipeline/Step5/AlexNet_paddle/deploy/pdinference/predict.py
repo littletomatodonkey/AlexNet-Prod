@@ -106,6 +106,8 @@ def predict(args):
     output_names = predictor.get_output_names()
     output_tensor = predictor.get_output_handle(output_names[0])
 
+    assert args.batch_size == 1, "batch size just supports 1 now."
+
     # init benchmark
     if args.benchmark:
         import auto_log

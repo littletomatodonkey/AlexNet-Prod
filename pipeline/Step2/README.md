@@ -5,35 +5,34 @@
 * 使用下面的命令，判断数据预处理以及数据集是否构建正确。
 
 ```shell
+tar -xf lite_data.tar
 python test_data.py
 ```
 
 显示出以下内容，Dataset以及Dataloader的长度和内容diff均满足小于指定阈值，可以认为复现成功。
 
 ```
-2021/10/12 23:21:30] root INFO: length:
-[2021/10/12 23:21:30] root INFO:        mean diff: check passed: True, value: 0.0
-[2021/10/12 23:21:30] root INFO: dataset_0:
-[2021/10/12 23:21:30] root INFO:        mean diff: check passed: True, value: 0.0
-[2021/10/12 23:21:30] root INFO: dataset_1:
-[2021/10/12 23:21:30] root INFO:        mean diff: check passed: True, value: 0.0
-[2021/10/12 23:21:30] root INFO: dataset_2:
-[2021/10/12 23:21:30] root INFO:        mean diff: check passed: True, value: 0.0
-[2021/10/12 23:21:30] root INFO: dataset_3:
-[2021/10/12 23:21:30] root INFO:        mean diff: check passed: True, value: 0.0
-[2021/10/12 23:21:30] root INFO: dataset_4:
-[2021/10/12 23:21:30] root INFO:        mean diff: check passed: True, value: 0.0
-[2021/10/12 23:21:30] root INFO: dataloader_0:
-[2021/10/12 23:21:30] root INFO:        mean diff: check passed: True, value: 0.0
-[2021/10/12 23:21:30] root INFO: dataloader_1:
-[2021/10/12 23:21:30] root INFO:        mean diff: check passed: True, value: 0.0
-[2021/10/12 23:21:30] root INFO: dataloader_2:
-[2021/10/12 23:21:30] root INFO:        mean diff: check passed: True, value: 0.0
-[2021/10/12 23:21:30] root INFO: dataloader_3:
-[2021/10/12 23:21:30] root INFO:        mean diff: check passed: True, value: 0.0
-[2021/10/12 23:21:30] root INFO: dataloader_4:
-[2021/10/12 23:21:30] root INFO:        mean diff: check passed: True, value: 0.0
-[2021/10/12 23:21:30] root INFO: diff check passed
+[2021/12/04 06:34:43] root INFO: length:
+[2021/12/04 06:34:43] root INFO:    mean diff: check passed: True, value: 0.0
+[2021/12/04 06:34:43] root INFO: dataset_0:
+[2021/12/04 06:34:43] root INFO:    mean diff: check passed: True, value: 0.0
+[2021/12/04 06:34:43] root INFO: dataset_1:
+[2021/12/04 06:34:43] root INFO:    mean diff: check passed: True, value: 0.0
+[2021/12/04 06:34:43] root INFO: dataset_2:
+[2021/12/04 06:34:43] root INFO:    mean diff: check passed: True, value: 0.0
+[2021/12/04 06:34:43] root INFO: dataset_3:
+[2021/12/04 06:34:43] root INFO:    mean diff: check passed: True, value: 0.0
+[2021/12/04 06:34:43] root INFO: dataset_4:
+[2021/12/04 06:34:43] root INFO:    mean diff: check passed: True, value: 0.0
+[2021/12/04 06:34:43] root INFO: dataloader_0:
+[2021/12/04 06:34:43] root INFO:    mean diff: check passed: True, value: 0.0
+[2021/12/04 06:34:43] root INFO: dataloader_1:
+[2021/12/04 06:34:43] root INFO:    mean diff: check passed: True, value: 0.0
+[2021/12/04 06:34:43] root INFO: dataloader_2:
+[2021/12/04 06:34:43] root INFO:    mean diff: check passed: True, value: 0.0
+[2021/12/04 06:34:43] root INFO: dataloader_3:
+[2021/12/04 06:34:43] root INFO:    mean diff: check passed: True, value: 0.0
+[2021/12/04 06:34:43] root INFO: diff check passed
 ```
 
 

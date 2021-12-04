@@ -34,12 +34,12 @@ def build_paddle_data_pipeline():
     import AlexNet_paddle.presets as presets
     import AlexNet_paddle.paddlevision as paddlevision
     dataset_test = paddlevision.datasets.ImageFolder(
-        "/paddle/data/ILSVRC2012_torch/val/",
+        "./lite_data/val/",
         presets.ClassificationPresetEval(
             crop_size=224, resize_size=256))
     test_sampler = paddle.io.SequenceSampler(dataset_test)
     test_batch_sampler = paddle.io.BatchSampler(
-        sampler=test_sampler, batch_size=32)
+        sampler=test_sampler, batch_size=4)
     data_loader_test = paddle.io.DataLoader(
         dataset_test, batch_sampler=test_batch_sampler, num_workers=0)
     sys.path.pop(0)
@@ -51,13 +51,13 @@ def build_torch_data_pipeline():
     import AlexNet_torch.presets as presets
     import AlexNet_torch.torchvision as torchvision
     dataset_test = torchvision.datasets.ImageFolder(
-        "/paddle/data/ILSVRC2012_torch/val/",
+        "./lite_data/val/",
         presets.ClassificationPresetEval(
             crop_size=224, resize_size=256))
     test_sampler = torch.utils.data.SequentialSampler(dataset_test)
     data_loader_test = torch.utils.data.DataLoader(
         dataset_test,
-        batch_size=32,
+        batch_size=4,
         sampler=test_sampler,
         num_workers=0,
         pin_memory=True)
@@ -68,7 +68,7 @@ def build_torch_data_pipeline():
 def test_transform():
     paddle_transform = build_paddle_transform()
     torch_transform = build_torch_transform()
-    img = Image.open("./demo_image/ILSVRC2012_val_00006697.JPEG")
+    img = Image.open("./lite_data/val/n12057211/ILSVRC2012_val_00021765.JPEG")
 
     paddle_img = paddle_transform(img)
     torch_img = torch_transform(img)

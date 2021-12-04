@@ -17,59 +17,46 @@ apex = None
 
 import numpy as np
 from reprod_log import ReprodLogger
+from auto_log import TrainerLogger
 
 
-def train_one_epoch(model,
-                    criterion,
-                    optimizer,
-                    data_loader,
-                    device,
-                    epoch,
-                    print_freq,
-                    apex=False):
+def train_one_epoch(model, criterion, optimizer, data_loader, device, epoch,
+                    print_freq, trainer_logger):
     model.train()
     # training log
-    train_reader_cost = 0.0
-    train_run_cost = 0.0
-    total_samples = 0
-    acc1 = 0.0
-    acc5 = 0.0
+    reader_cost = 0.0
+    run_cost = 0.0
     reader_start = time.time()
-    batch_past = 0
+
+    trainer_logger.add_record_info("top1", "")
+    trainer_logger.add_record_info("top5", "")
 
     for batch_idx, (image, target) in enumerate(data_loader):
-        train_reader_cost += time.time() - reader_start
+        reader_cost = time.time() - reader_start
         train_start = time.time()
         output = model(image)
         loss = criterion(output, target)
         loss.backward()
         optimizer.step()
         optimizer.clear_grad()
-        train_run_cost += time.time() - train_start
         acc = utils.accuracy(output, target, topk=(1, 5))
-        acc1 += acc[0].item()
-        acc5 += acc[1].item()
-        total_samples += image.shape[0]
-        batch_past += 1
+        run_cost = time.time() - train_start
 
-        if batch_idx > 0 and batch_idx % print_freq == 0:
-            msg = "[Epoch {}, iter: {}] top1: {:.5f}%, top5: {:.5f}%, lr: {:.5f}, loss: {:.5f}, avg_reader_cost: {:.5f} sec, avg_batch_cost: {:.5f} sec, avg_samples: {}, avg_ips: {:.5f} images/sec.".format(
-                epoch, batch_idx, acc1 / batch_past, acc5 / batch_past,
-                optimizer.get_lr(),
-                loss.item(), train_reader_cost / batch_past,
-                (train_reader_cost + train_run_cost) / batch_past,
-                total_samples / batch_past,
-                total_samples / (train_reader_cost + train_run_cost))
-            print(msg)
-            sys.stdout.flush()
-            train_reader_cost = 0.0
-            train_run_cost = 0.0
-            total_samples = 0
-            acc1 = 0.0
-            acc5 = 0.0
-            batch_past = 0
+        sample_num = image.shape[0]
+        trainer_logger.update(
+            sample_num,
+            reader_cost,
+            run_cost,
+            loss.item(),
+            top1=acc[0].item(),
+            top5=acc[1].item())
+
+        if batch_idx % print_freq == 0:
+            trainer_logger.log(epoch, batch_idx)
 
         reader_start = time.time()
+
+    trainer_logger.log(epoch)
 
 
 def evaluate(model, criterion, data_loader, device, print_freq=100):
@@ -214,9 +201,11 @@ def main(args):
     start_time = time.time()
     best_top1 = 0.0
 
+    trainer_logger = TrainerLogger(args.output_dir)
+
     for epoch in range(args.start_epoch, args.epochs):
         train_one_epoch(model, criterion, optimizer, data_loader, device,
-                        epoch, args.print_freq, args.apex)
+                        epoch, args.print_freq, trainer_logger)
         lr_scheduler.step()
         if paddle.distributed.get_rank() == 0:
             top1 = evaluate(model, criterion, data_loader_test, device=device)

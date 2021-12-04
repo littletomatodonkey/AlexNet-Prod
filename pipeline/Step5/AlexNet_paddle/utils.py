@@ -150,7 +150,7 @@ def accuracy(output, target, topk=(1, )):
         for k in topk:
             correct_k = correct.astype(paddle.int32)[:k].flatten().sum(
                 dtype='float32')
-            res.append(correct_k * (100.0 / batch_size))
+            res.append(correct_k / batch_size)
         return res
 
 

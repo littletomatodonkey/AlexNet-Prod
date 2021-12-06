@@ -35,7 +35,7 @@ AlexNet是2012年ImageNet竞赛冠军获得者Hinton和他的学生Alex Krizhevs
 
 | 模型      | top1/5 acc (参考精度) | top1/5 acc (复现精度) | 下载链接 |
 |:---------:|:------:|:----------:|:----------:|
-| AlexNet | 0.56522/0.79066   | -   | [模型(coming soon)]() | [日志(coming soon)]() |
+| AlexNet | 0.56522/0.79066   | -   | [模型(coming soon)]() \| [日志(coming soon)]() |
 
 ## 3. 开始使用
 

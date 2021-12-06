@@ -1,19 +1,19 @@
 ===========================train_params===========================
 model_name:AlexNet
 python:python3.7
-gpu_list:0
+gpu_list:0|0,1
 --device:gpu|cpu
 null:null
---epochs:lite_train_lite_infer=1|lite_train_lite_infer=1
+--epochs:lite_train_lite_infer=1
 --output-dir:./output/
---batch-size:lite_train_lite_infer=4
-null:null
+--batch-size:lite_train_lite_infer=1
+--pretrained:null
 train_model_name:latest.pdparams
 null:null
---lr:0.000125
+null:null
 ##
 trainer:norm_train
-norm_train:train.py --data-path=./lite_data/
+norm_train:train.py --lr=0.001 --data-path=./lite_data
 pact_train:null
 fpgm_train:null
 distill_train:null
@@ -21,13 +21,13 @@ null:null
 null:null
 ##
 ===========================eval_params===========================
-eval:train.py --test-only --data-path=./lite_data/
+eval:null
 null:null
 ##
 ===========================infer_params===========================
---save-inference-dir:inference
---pretrained:./output/latest.pdparams
-norm_export:tools/export_model.py
+--save-inference-dir:
+--pretrained:
+norm_export:tools/export_model.py --model=alexnet
 quant_export:null
 fpgm_export:null
 distill_export:null
@@ -35,17 +35,17 @@ export1:null
 export2:null
 ##
 infer_model:null
-infer_export:tools/export_model.py
+infer_export:tools/export_model.py --model=alexnet
 infer_quant:False
-inference:deploy/pdinference/predict.py
---use-gpu:False|True
+inference:deploy/pdinference/infer.py
+--use-gpu:True|False
 --use-mkldnn:True|False
---cpu-threads:1|10
+--cpu-threads:1|6
+--batch-size:1
+--use-tensorrt:null
 --null:null
---use-tensorrt:False
---precision:fp32
---model-dir:
---image-dir:./images/demo.jpg
---save_log_path:./test/output/
---benchmark:True
+--model-dir:./infer
+--image_dir:./lite_data/test/demo.jpg
+--save_log_path:null
+--benchmark:False
 null:null

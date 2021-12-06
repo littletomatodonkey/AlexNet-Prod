@@ -73,10 +73,10 @@ pip install -r requirements.txt
 
 如果您已经ImageNet1k数据集，那么该步骤可以跳过，如果您没有，则可以从[ImageNet官网](https://image-net.org/download.php)申请下载。
 
-如果只是希望快速体验模型训练功能，则可以直接解压`lite_data.tar`，其中包含16张训练图像以及16张验证图像。
+如果只是希望快速体验模型训练功能，则可以直接解压`test_images/lite_data.tar`，其中包含16张训练图像以及16张验证图像。
 
 ```bash
-tar -xf lite_data.tar
+tar -xf test_images/lite_data.tar
 ```
 
 ### 3.1.3 准备模型

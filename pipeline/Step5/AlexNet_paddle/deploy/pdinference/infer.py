@@ -5,7 +5,7 @@ import numpy as np
 from PIL import Image
 
 from reprod_log import ReprodLogger
-from preprocess import ResizeImage, CenterCropImage, NormalizeImage, ToCHW, Compose
+from preprocess_ops import ResizeImage, CenterCropImage, NormalizeImage, ToCHW, Compose
 
 
 def load_predictor(model_file_path, params_file_path, args):
@@ -43,7 +43,31 @@ def load_predictor(model_file_path, params_file_path, args):
 
     # create predictor
     predictor = inference.create_predictor(config)
-    return predictor, config
+
+    # get input and output tensor property
+    input_names = predictor.get_input_names()
+    input_tensor = predictor.get_input_handle(input_names[0])
+
+    output_names = predictor.get_output_names()
+    output_tensor = predictor.get_output_handle(output_names[0])
+
+    return predictor, config, input_tensor, output_tensor
+
+
+def preprocess(img_path, transforms):
+    with open(img_path, "rb") as f:
+        img = Image.open(f)
+        img = img.convert("RGB")
+    img = transforms(img)
+    img = np.expand_dims(img, axis=0)
+    return img
+
+
+def postprocess(output):
+    output = output.flatten()
+    class_id = output.argmax()
+    prob = output[class_id]
+    return class_id, prob
 
 
 def get_args(add_help=True):
@@ -96,15 +120,10 @@ def get_infer_gpuid():
 
 
 def predict(args):
-    predictor, config = load_predictor(
+    # init inference engine
+    predictor, config, input_tensor, output_tensor = load_predictor(
         os.path.join(args.model_dir, "inference.pdmodel"),
         os.path.join(args.model_dir, "inference.pdiparams"), args)
-
-    input_names = predictor.get_input_names()
-    input_tensor = predictor.get_input_handle(input_names[0])
-
-    output_names = predictor.get_output_names()
-    output_tensor = predictor.get_output_handle(output_names[0])
 
     assert args.batch_size == 1, "batch size just supports 1 now."
 
@@ -129,7 +148,8 @@ def predict(args):
             warmup=0,
             logger=None)
 
-    eval_transforms = Compose([
+    # build transforms
+    infer_transforms = Compose([
         ResizeImage(args.resize_size), CenterCropImage(args.crop_size),
         NormalizeImage(), ToCHW()
     ])
@@ -142,46 +162,41 @@ def predict(args):
             predictor.run()
             output = output_tensor.copy_to_cpu()
 
+    # enable benchmark
     if args.benchmark:
         autolog.times.start()
 
-    # inference
-    with open(args.img_path, "rb") as f:
-        img = Image.open(f)
-        img = img.convert("RGB")
-
-    img = eval_transforms(img)
-    img = np.expand_dims(img, axis=0)
-    input_tensor.copy_from_cpu(img)
+    # preprocess
+    img = preprocess(args.img_path, infer_transforms)
 
     if args.benchmark:
         autolog.times.stamp()
 
+    # inference using inference engine
+    input_tensor.copy_from_cpu(img)
     predictor.run()
     output = output_tensor.copy_to_cpu()
 
     if args.benchmark:
         autolog.times.stamp()
 
-    output = output.flatten()
-    class_id = output.argmax()
+    # postprocess
+    class_id, prob = postprocess(output)
 
     if args.benchmark:
         autolog.times.stamp()
-
-    prob = output[class_id]
-    print(f"image_name: {args.img_path}, class_id: {class_id}, prob: {prob}")
-
-    if args.benchmark:
         autolog.times.end(stamp=True)
         autolog.report()
-    return output
+
+    print(f"image_name: {args.img_path}, class_id: {class_id}, prob: {prob}")
+    return class_id, prob
 
 
 if __name__ == "__main__":
     args = get_args()
-    output = predict(args)
+    class_id, prob = predict(args)
 
     reprod_logger = ReprodLogger()
-    reprod_logger.add("output", output)
+    reprod_logger.add("class_id", np.array([class_id]))
+    reprod_logger.add("prob", np.array([prob]))
     reprod_logger.save("output_inference_engine.npy")

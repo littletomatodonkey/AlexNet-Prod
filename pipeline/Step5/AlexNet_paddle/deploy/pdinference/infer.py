@@ -12,22 +12,6 @@ def load_predictor(model_file_path, params_file_path, args):
     config = inference.Config(model_file_path, params_file_path)
     if args.use_gpu:
         config.enable_use_gpu(1000, 0)
-        if args.use_tensorrt:
-            if hasattr(args, "precision"):
-                if args.precision == "fp16" and args.use_tensorrt:
-                    precision = inference.PrecisionType.Half
-                elif args.precision == "int8":
-                    precision = inference.PrecisionType.Int8
-                else:
-                    precision = inference.PrecisionType.Float32
-            else:
-                precision = inference.PrecisionType.Float32
-
-            config.enable_tensorrt_engine(
-                workspace_size=1 << 30,
-                precision_mode=precision,
-                max_batch_size=args.max_batch_size,
-                min_subgraph_size=args.min_subgraph_size)
     else:
         config.disable_gpu()
         if args.use_mkldnn:
@@ -84,10 +68,7 @@ def get_args(add_help=True):
     parser.add_argument(
         "--use-gpu", default=False, type=str2bool, help="use_gpu")
     parser.add_argument(
-        "--use-tensorrt", default=False, type=str2bool, help="use_trt")
-    parser.add_argument(
         "--use-mkldnn", default=False, type=str2bool, help="use_mkldnn")
-    parser.add_argument("--precision", default="fp32", help="precision")
     parser.add_argument(
         "--min-subgraph-size", default=15, type=int, help="min_subgraph_size")
     parser.add_argument(
@@ -102,7 +83,7 @@ def get_args(add_help=True):
     parser.add_argument("--img-path", default="./images/demo.jpg")
 
     parser.add_argument(
-        "--benchmark", default=True, type=str2bool, help="benchmark")
+        "--benchmark", default=False, type=str2bool, help="benchmark")
     parser.add_argument("--warmup", default=0, type=int, help="warmup iter")
 
     args = parser.parse_args()

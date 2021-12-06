@@ -17,46 +17,60 @@ apex = None
 
 import numpy as np
 from reprod_log import ReprodLogger
-from auto_log import TrainerLogger
 
 
-def train_one_epoch(model, criterion, optimizer, data_loader, device, epoch,
-                    print_freq, trainer_logger):
+def train_one_epoch(
+        model,
+        criterion,
+        optimizer,
+        data_loader,
+        device,
+        epoch,
+        print_freq, ):
     model.train()
     # training log
-    reader_cost = 0.0
-    run_cost = 0.0
+    train_reader_cost = 0.0
+    train_run_cost = 0.0
+    total_samples = 0
+    acc1 = 0.0
+    acc5 = 0.0
     reader_start = time.time()
-
-    trainer_logger.add_record_info("top1", "")
-    trainer_logger.add_record_info("top5", "")
+    batch_past = 0
 
     for batch_idx, (image, target) in enumerate(data_loader):
-        reader_cost = time.time() - reader_start
+        train_reader_cost += time.time() - reader_start
         train_start = time.time()
         output = model(image)
         loss = criterion(output, target)
         loss.backward()
         optimizer.step()
         optimizer.clear_grad()
+        train_run_cost += time.time() - train_start
         acc = utils.accuracy(output, target, topk=(1, 5))
-        run_cost = time.time() - train_start
+        acc1 += acc[0].item()
+        acc5 += acc[1].item()
+        total_samples += image.shape[0]
+        batch_past += 1
 
-        sample_num = image.shape[0]
-        trainer_logger.update(
-            sample_num,
-            reader_cost,
-            run_cost,
-            loss.item(),
-            top1=acc[0].item(),
-            top5=acc[1].item())
-
-        if batch_idx % print_freq == 0:
-            trainer_logger.log(epoch, batch_idx)
+        if batch_idx > 0 and batch_idx % print_freq == 0:
+            msg = "[Epoch {}, iter: {}] top1: {:.5f}, top5: {:.5f}, lr: {:.5f}, loss: {:.5f}, avg_reader_cost: {:.5f} sec, avg_batch_cost: {:.5f} sec, avg_samples: {}, avg_ips: {:.5f} images/sec.".format(
+                epoch, batch_idx, acc1 / batch_past, acc5 / batch_past,
+                optimizer.get_lr(),
+                loss.item(), train_reader_cost / batch_past,
+                (train_reader_cost + train_run_cost) / batch_past,
+                total_samples / batch_past,
+                total_samples / (train_reader_cost + train_run_cost))
+            if paddle.distributed.get_rank() <= 0:
+                print(msg)
+                sys.stdout.flush()
+            train_reader_cost = 0.0
+            train_run_cost = 0.0
+            total_samples = 0
+            acc1 = 0.0
+            acc5 = 0.0
+            batch_past = 0
 
         reader_start = time.time()
-
-    trainer_logger.log(epoch)
 
 
 def evaluate(model, criterion, data_loader, device, print_freq=100):
@@ -201,11 +215,9 @@ def main(args):
     start_time = time.time()
     best_top1 = 0.0
 
-    trainer_logger = TrainerLogger(args.output_dir)
-
     for epoch in range(args.start_epoch, args.epochs):
         train_one_epoch(model, criterion, optimizer, data_loader, device,
-                        epoch, args.print_freq, trainer_logger)
+                        epoch, args.print_freq)
         lr_scheduler.step()
         if paddle.distributed.get_rank() == 0:
             top1 = evaluate(model, criterion, data_loader_test, device=device)
@@ -218,11 +230,9 @@ def main(args):
                             os.path.join(args.output_dir,
                                          'model_{}.pdopt'.format(epoch)))
                 paddle.save(model.state_dict(),
-                            os.path.join(args.output_dir,
-                                         'latest.pdparams'.format(epoch)))
+                            os.path.join(args.output_dir, 'latest.pdparams'))
                 paddle.save(optimizer.state_dict(),
-                            os.path.join(args.output_dir,
-                                         'latest.pdopt'.format(epoch)))
+                            os.path.join(args.output_dir, 'latest.pdopt'))
 
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))
@@ -248,7 +258,7 @@ def get_args_parser(add_help=True):
     parser.add_argument(
         '-j',
         '--workers',
-        default=16,
+        default=8,
         type=int,
         metavar='N',
         help='number of data loading workers (default: 16)')

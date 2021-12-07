@@ -20,7 +20,9 @@ class AlexNet(nn.Layer):
                 stride=4,
                 padding=2,
                 weight_attr=ParamAttr(initializer=self.uniform_init(3 * 11 *
-                                                                    11))),
+                                                                    11)),
+                bias_attr=ParamAttr(initializer=self.uniform_init(3 * 11 *
+                                                                  11))),
             nn.ReLU(),
             nn.MaxPool2D(
                 kernel_size=3, stride=2),
@@ -30,7 +32,9 @@ class AlexNet(nn.Layer):
                 kernel_size=5,
                 padding=2,
                 weight_attr=ParamAttr(initializer=self.uniform_init(64 * 5 *
-                                                                    5))),
+                                                                    5)),
+                bias_attr=ParamAttr(initializer=self.uniform_init(64 * 5 *
+                                                                  5))),
             nn.ReLU(),
             nn.MaxPool2D(
                 kernel_size=3, stride=2),
@@ -40,7 +44,9 @@ class AlexNet(nn.Layer):
                 kernel_size=3,
                 padding=1,
                 weight_attr=ParamAttr(initializer=self.uniform_init(192 * 3 *
-                                                                    4))),
+                                                                    3)),
+                bias_attr=ParamAttr(initializer=self.uniform_init(192 * 3 *
+                                                                  3))),
             nn.ReLU(),
             nn.Conv2D(
                 384,
@@ -48,7 +54,9 @@ class AlexNet(nn.Layer):
                 kernel_size=3,
                 padding=1,
                 weight_attr=ParamAttr(initializer=self.uniform_init(384 * 3 *
-                                                                    3))),
+                                                                    3)),
+                bias_attr=ParamAttr(initializer=self.uniform_init(384 * 3 *
+                                                                  3))),
             nn.ReLU(),
             nn.Conv2D(
                 256,
@@ -56,7 +64,9 @@ class AlexNet(nn.Layer):
                 kernel_size=3,
                 padding=1,
                 weight_attr=ParamAttr(initializer=self.uniform_init(256 * 3 *
-                                                                    3))),
+                                                                    3)),
+                bias_attr=ParamAttr(initializer=self.uniform_init(256 * 3 *
+                                                                  3))),
             nn.ReLU(),
             nn.MaxPool2D(
                 kernel_size=3, stride=2), )
@@ -67,18 +77,22 @@ class AlexNet(nn.Layer):
                 256 * 6 * 6,
                 4096,
                 weight_attr=ParamAttr(initializer=self.uniform_init(256 * 6 *
-                                                                    6))),
+                                                                    6)),
+                bias_attr=ParamAttr(initializer=self.uniform_init(256 * 6 *
+                                                                  6))),
             nn.ReLU(),
             nn.Dropout(),
             nn.Linear(
                 4096,
                 4096,
-                weight_attr=ParamAttr(initializer=self.uniform_init(4096))),
+                weight_attr=ParamAttr(initializer=self.uniform_init(4096)),
+                bias_attr=ParamAttr(initializer=self.uniform_init(4096))),
             nn.ReLU(),
             nn.Linear(
                 4096,
                 num_classes,
-                weight_attr=ParamAttr(initializer=self.uniform_init(4096))), )
+                weight_attr=ParamAttr(initializer=self.uniform_init(4096)),
+                bias_attr=ParamAttr(initializer=self.uniform_init(4096))))
 
     def uniform_init(self, num):
         stdv = 1.0 / math.sqrt(num)

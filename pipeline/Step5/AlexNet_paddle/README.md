@@ -2,9 +2,24 @@
 
 ## 目录
 
-```
-coming soon!
-```
+
+- [1. 简介]()
+- [2. 数据集和复现精度]()
+- [3. 准备数据与环境]()
+    - [3.1 准备数据]()
+    - [3.2 准备环境]()
+    - [3.3 准备模型]()
+- [4. 开始使用]()
+    - [4.1 模型训练]()
+    - [4.2 模型评估]()
+    - [4.3 模型预测]()
+- [5. 模型推理部署]()
+    - [5.1 基于Inference的推理]()
+    - [5.2 基于Serving的服务化部署]()
+- [6. 自动化测试脚本]()
+- [7. 参考链接与文献]()
+
+
 
 
 
@@ -37,12 +52,10 @@ AlexNet是2012年ImageNet竞赛冠军获得者Hinton和他的学生Alex Krizhevs
 |:---------:|:------:|:----------:|:----------:|
 | AlexNet | 0.56522/0.79066   | -   | [模型(coming soon)]() \| [日志(coming soon)]() |
 
-## 3. 开始使用
 
-### 3.1 准备数据与环境
+## 3. 准备环境与数据
 
-
-#### 3.1.1 准备环境
+### 3.1 准备环境
 
 * 下载代码
 
@@ -69,7 +82,7 @@ pip install paddlepaddle==2.2.0
 pip install -r requirements.txt
 ```
 
-### 3.1.2 准备数据
+### 3.2 准备数据
 
 如果您已经ImageNet1k数据集，那么该步骤可以跳过，如果您没有，则可以从[ImageNet官网](https://image-net.org/download.php)申请下载。
 
@@ -79,13 +92,14 @@ pip install -r requirements.txt
 tar -xf test_images/lite_data.tar
 ```
 
-### 3.1.3 准备模型
+### 3.3 准备模型
 
 如果您希望直接体验评估或者预测推理过程，可以直接根据第2章的内容下载提供的预训练模型，直接体验模型评估、预测、推理部署等内容。
 
-### 3.2 开始使用
 
-#### 3.2.1 模型训练
+## 4. 开始使用
+
+### 4.1 模型训练
 
 * 单机单卡训练
 
@@ -110,7 +124,7 @@ python3.7 -m paddle.distributed.launch --gpus="0,1,2,3" train.py --data-path="./
 
 更多配置参数可以参考[train.py](./train.py)的`get_args_parser`函数。
 
-#### 3.2.2 模型评估
+### 4.2 模型评估
 
 该项目中，训练与评估脚本相同，指定`--test-only`参数即可完成预测过程。
 
@@ -128,7 +142,7 @@ Test: Total time: 0:02:05
  * Acc@1 0.565 Acc@5 0.791
 ```
 
-#### 3.2.4 模型预测
+### 4.3 模型预测
 
 * 使用GPU预测
 
@@ -151,11 +165,11 @@ python tools/predict.py --pretrained=./alexnet_paddle.pdparams --model=alexnet -
 ```
 
 
-## 4. 模型推理部署
+## 5. 模型推理部署
 
-### 4.1 基于Inference的推理
+### 5.1 基于Inference的推理
 
-#### 4.1.1 模型动转静导出
+#### 5.1.1 模型动转静导出
 
 使用下面的命令完成`AlexNet`模型的动转静导出。
 
@@ -172,11 +186,11 @@ alexnet_infer
      |----inference.pdiparams.info: 模型参数信息文件
 ```
 
-#### 4.1.2 模型推理
+#### 5.1.2 模型推理
 
 
 ```bash
-python tools/export_model.py --pretrained=./alexnet_paddle.pdparams --save-inference-dir="./alexnet_infer" --model=alexnet
+python deploy/py_inference/infer.py --model-dir=./alexnet_infer/ --img-path=./images/demo.jpg
 ```
 
 对于下面的图像进行预测
@@ -194,12 +208,12 @@ image_name: ./images/demo.jpg, class_id: 8, prob: 0.8741400241851807
 表示预测的类别ID是`8`，置信度为`0.874`，该结果与基于训练引擎的结果完全一致。
 
 
-### 4.2 基于Serving的服务化部署
-
+### 5.2 基于Serving的服务化部署
 
 coming soon!
 
-## 5. TIPC测试
+
+## 6. 自动化测试脚本
 
 测试流程如下。
 
@@ -210,16 +224,18 @@ coming soon!
 tar -xf lite_data.tar
 ```
 
-* 运行TIPC测试命令
+* 运行测试命令
 
 ```bash
-bash test_tipc/test_train_inference_python.sh test_tipc/AlexNet/train_infer_python.txt lite_train_lite_infer
+bash test_tipc/test_train_inference_python.sh test_tipc/configs/AlexNet/train_infer_python.txt lite_train_lite_infer
 ```
 
 如果运行成功，在终端中会显示下面的内容，具体的日志也会输出到`test_tipc/output/`文件夹中的文件中。
 
 ```
-coming soon!
+Run successfully with command - python3.7 -m paddle.distributed.launch --gpus=0,1 train.py --lr=0.001 --data-path=./lite_data --device=cpu --output-dir=./test_tipc/output/norm_train_gpus_0,1_autocast_null --epochs=1     --batch-size=1    !  
+ ...
+Run successfully with command - python3.7 deploy/py_inference/infer.py --use-gpu=False --use-mkldnn=False --cpu-threads=6 --model-dir=./test_tipc/output/norm_train_gpus_0_autocast_null/ --batch-size=1     --benchmark=False     > ./test_tipc/output/python_infer_cpu_usemkldnn_False_threads_6_precision_null_batchsize_1.log 2>&1 !  
 ```
 
 
@@ -227,4 +243,7 @@ coming soon!
 * 如果运行失败，可以先根据报错的具体命令，自查下配置文件是否正确，如果无法解决，可以给Paddle提ISSUE：[https://github.com/PaddlePaddle/Paddle/issues/new/choose](https://github.com/PaddlePaddle/Paddle/issues/new/choose)；如果您在微信群里的话，也可以在群里及时提问。
 
 
-## 6. 参考链接与文献
+## 7. 参考链接与文献
+
+1. Krizhevsky A, Sutskever I, Hinton G E. Imagenet classification with deep convolutional neural networks[J]. Advances in neural information processing systems, 2012, 25: 1097-1105.
+2. vision: https://github.com/pytorch/vision

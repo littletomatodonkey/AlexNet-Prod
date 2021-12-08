@@ -156,7 +156,7 @@ python tools/predict.py --pretrained=./alexnet_paddle.pdparams --model=alexnet -
     <img src="./images/demo.jpg" width=300">
 </div>
 
-最终输出结果为`class_id: 8, prob: 0.8741399645805359`，表示预测的类别ID是`8`，置信度为`0.874`。
+最终输出结果为`class_id: 8, prob: 0.9990353584`，表示预测的类别ID是`8`，置信度为`0.999`。
 
 * 使用CPU预测
 
@@ -202,10 +202,10 @@ python deploy/py_inference/infer.py --model-dir=./alexnet_infer/ --img-path=./im
 在终端中输出结果如下。
 
 ```
-image_name: ./images/demo.jpg, class_id: 8, prob: 0.8741400241851807
+image_name: ./images/demo.jpg, class_id: 8, prob: 0.9990355968475342
 ```
 
-表示预测的类别ID是`8`，置信度为`0.874`，该结果与基于训练引擎的结果完全一致。
+表示预测的类别ID是`8`，置信度为`0.999`，该结果与基于训练引擎的结果完全一致。
 
 
 ### 5.2 基于Serving的服务化部署

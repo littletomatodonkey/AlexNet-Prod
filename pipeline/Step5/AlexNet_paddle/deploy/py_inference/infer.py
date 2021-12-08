@@ -8,7 +8,7 @@ from reprod_log import ReprodLogger
 from preprocess_ops import ResizeImage, CenterCropImage, NormalizeImage, ToCHW, Compose
 
 
-class InferenceEngine():
+class InferenceEngine(object):
     def __init__(self, args):
         super().__init__()
         self.args = args

@@ -50,7 +50,7 @@ AlexNet是2012年ImageNet竞赛冠军获得者Hinton和他的学生Alex Krizhevs
 
 | 模型      | top1/5 acc (参考精度) | top1/5 acc (复现精度) | 下载链接 |
 |:---------:|:------:|:----------:|:----------:|
-| AlexNet | 0.56522/0.79066   | -   | [模型(coming soon)]() \| [日志(coming soon)]() |
+| AlexNet | 0.56522/0.79066   | -   | [模型](https://paddle-model-ecology.bj.bcebos.com/model/alexnet_reprod/alexnet_pretrained.pdparams) \| [日志](https://paddle-model-ecology.bj.bcebos.com/model/alexnet_reprod/alexnet_train.log) |
 
 
 ## 3. 准备环境与数据
@@ -210,7 +210,7 @@ image_name: ./images/demo.jpg, class_id: 8, prob: 0.9990355968475342
 
 ### 5.2 基于Serving的服务化部署
 
-coming soon!
+Serving部署教程可参考：[链接](deploy/py_serving/README.md)。
 
 
 ## 6. 自动化测试脚本

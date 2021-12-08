@@ -20,9 +20,6 @@
 - [7. 参考链接与文献]()
 
 
-
-
-
 ## 1. 简介
 
 AlexNet是2012年ImageNet竞赛冠军获得者Hinton和他的学生Alex Krizhevsky设计的。主要创新点如下。
@@ -67,7 +64,7 @@ cd AlexNet-Prod/pipeline/Step5/AlexNet_paddle
 * 安装paddlepaddle
 
 ```bash
-# 需要安装2.1以上版本的Paddle，如果
+# 需要安装2.2及以上版本的Paddle，如果
 # 安装GPU版本的Paddle
 pip install paddlepaddle-gpu==2.2.0
 # 安装CPU版本的Paddle
@@ -210,7 +207,7 @@ image_name: ./images/demo.jpg, class_id: 8, prob: 0.9990355968475342
 
 ### 5.2 基于Serving的服务化部署
 
-Serving部署教程可参考：[链接](deploy/py_serving/README.md)。
+Serving部署教程可参考：[链接](deploy/serving/README.md)。
 
 
 ## 6. 自动化测试脚本

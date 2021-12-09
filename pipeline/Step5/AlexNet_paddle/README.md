@@ -221,7 +221,7 @@ Serving部署教程可参考：[链接](deploy/serving/README.md)。
 
 ```bash
 # 解压数据，如果您已经解压过，则无需再次运行该步骤
-tar -xf lite_data.tar
+tar -xf test_images/lite_data.tar
 ```
 
 * 运行测试命令

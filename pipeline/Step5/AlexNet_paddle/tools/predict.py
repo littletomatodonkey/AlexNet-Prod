@@ -33,7 +33,7 @@ def get_args(add_help=True):
 
 
 @paddle.no_grad()
-def infer(args):
+def main(args):
     # define model
     model = paddlevision.models.__dict__[args.model](
         pretrained=args.pretrained, num_classes=args.num_classes)
@@ -61,7 +61,7 @@ def infer(args):
 
 if __name__ == "__main__":
     args = get_args()
-    output = infer(args)
+    output = main(args)
 
     reprod_logger = ReprodLogger()
     reprod_logger.add("output", output)

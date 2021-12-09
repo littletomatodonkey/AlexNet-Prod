@@ -47,7 +47,7 @@ AlexNet是2012年ImageNet竞赛冠军获得者Hinton和他的学生Alex Krizhevs
 
 | 模型      | top1/5 acc (参考精度) | top1/5 acc (复现精度) | 下载链接 |
 |:---------:|:------:|:----------:|:----------:|
-| AlexNet | 0.565/0.791   | 0.790/0.564   | [预训练模型](https://paddle-model-ecology.bj.bcebos.com/model/alexnet_reprod/alexnet_pretrained.pdparams) \|  [Inference模型](https://paddle-model-ecology.bj.bcebos.com/model/alexnet_reprod/alexnet_infer.tar) \| [日志](https://paddle-model-ecology.bj.bcebos.com/model/alexnet_reprod/alexnet_train.log) |
+| AlexNet | 0.565/0.791   | 0.564/0.790   | [预训练模型](https://paddle-model-ecology.bj.bcebos.com/model/alexnet_reprod/alexnet_pretrained.pdparams) \|  [Inference模型](https://paddle-model-ecology.bj.bcebos.com/model/alexnet_reprod/alexnet_infer.tar) \| [日志](https://paddle-model-ecology.bj.bcebos.com/model/alexnet_reprod/alexnet_train.log) |
 
 
 ## 3. 准备环境与数据

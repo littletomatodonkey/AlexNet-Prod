@@ -47,7 +47,7 @@ AlexNet是2012年ImageNet竞赛冠军获得者Hinton和他的学生Alex Krizhevs
 
 | 模型      | top1/5 acc (参考精度) | top1/5 acc (复现精度) | 下载链接 |
 |:---------:|:------:|:----------:|:----------:|
-| AlexNet | 0.565/0.791   | 0.790/0.564   | [模型](https://paddle-model-ecology.bj.bcebos.com/model/alexnet_reprod/alexnet_pretrained.pdparams) \| [日志](https://paddle-model-ecology.bj.bcebos.com/model/alexnet_reprod/alexnet_train.log) |
+| AlexNet | 0.565/0.791   | 0.790/0.564   | [预训练模型](https://paddle-model-ecology.bj.bcebos.com/model/alexnet_reprod/alexnet_pretrained.pdparams) \|  [Inference模型](https://paddle-model-ecology.bj.bcebos.com/model/alexnet_reprod/alexnet_infer.tar) \| [日志](https://paddle-model-ecology.bj.bcebos.com/model/alexnet_reprod/alexnet_train.log) |
 
 
 ## 3. 准备环境与数据
@@ -126,7 +126,7 @@ python3.7 -m paddle.distributed.launch --gpus="0,1,2,3" train.py --data-path="./
 该项目中，训练与评估脚本相同，指定`--test-only`参数即可完成预测过程。
 
 ```bash
-python train.py --test-only --data-path=/paddle/data/ILSVRC2012 --pretrained=./alexnet_paddle.pdparams
+python train.py --test-only --data-path=/paddle/data/ILSVRC2012 --pretrained=./alexnet_pretrained.pdparams
 ```
 
 期望输出如下。
@@ -136,7 +136,7 @@ Test:  [   0/1563]  eta: 1:14:20  loss: 1.0456 (1.0456)  acc1: 0.7812 (0.7812)  
 ...
 Test:  [1500/1563]  eta: 0:00:05  loss: 1.2878 (1.9196)  acc1: 0.7344 (0.5639)  acc5: 0.8750 (0.7893)  time: 0.0623  data: 0.0534
 Test: Total time: 0:02:05
- * Acc@1 0.565 Acc@5 0.791
+ * Acc@1 0.564 Acc@5 0.790
 ```
 
 ### 4.3 模型预测
@@ -144,7 +144,7 @@ Test: Total time: 0:02:05
 * 使用GPU预测
 
 ```
-python tools/predict.py --pretrained=./alexnet_paddle.pdparams --model=alexnet --img-path=images/demo.jpg
+python tools/predict.py --pretrained=./alexnet_pretrained.pdparams --model=alexnet --img-path=images/demo.jpg
 ```
 
 对于下面的图像进行预测
@@ -171,7 +171,7 @@ python tools/predict.py --pretrained=./alexnet_paddle.pdparams --model=alexnet -
 使用下面的命令完成`AlexNet`模型的动转静导出。
 
 ```bash
-python tools/export_model.py --pretrained=./alexnet_paddle.pdparams --save-inference-dir="./alexnet_infer" --model=alexnet
+python tools/export_model.py --pretrained=./alexnet_pretrained.pdparams --save-inference-dir="./alexnet_infer" --model=alexnet
 ```
 
 最终在`alexnet_infer/`文件夹下会生成下面的3个文件。
@@ -187,7 +187,7 @@ alexnet_infer
 
 
 ```bash
-python deploy/py_inference/infer.py --model-dir=./alexnet_infer/ --img-path=./images/demo.jpg
+python deploy/inference/python/infer.py --model-dir=./alexnet_infer/ --img-path=./images/demo.jpg
 ```
 
 对于下面的图像进行预测

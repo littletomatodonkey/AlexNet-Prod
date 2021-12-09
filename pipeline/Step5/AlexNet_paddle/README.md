@@ -16,7 +16,7 @@
 - [5. 模型推理部署]()
     - [5.1 基于Inference的推理]()
     - [5.2 基于Serving的服务化部署]()
-- [6. 自动化测试脚本]()
+- [6. TIPC自动化测试脚本]()
 - [7. 参考链接与文献]()
 
 
@@ -210,9 +210,9 @@ image_name: ./images/demo.jpg, class_id: 8, prob: 0.9990355968475342
 Serving部署教程可参考：[链接](deploy/serving/README.md)。
 
 
-## 6. 自动化测试脚本
+## 6. TIPC自动化测试脚本
 
-测试流程如下。
+以Linux基础训练推理测试为例，测试流程如下。
 
 * 准备数据
 
@@ -236,7 +236,7 @@ Run successfully with command - python3.7 deploy/py_inference/infer.py --use-gpu
 ```
 
 
-* 更多详细内容，请参考：[Linux GPU/CPU 基础训练推理测试文档](./test_tipc/README.md)。
+* 更多详细内容，请参考：[AlexNet TIPC测试文档](./test_tipc/README.md)。
 * 如果运行失败，可以先根据报错的具体命令，自查下配置文件是否正确，如果无法解决，可以给Paddle提ISSUE：[https://github.com/PaddlePaddle/Paddle/issues/new/choose](https://github.com/PaddlePaddle/Paddle/issues/new/choose)；如果您在微信群里的话，也可以在群里及时提问。
 
 

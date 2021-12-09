@@ -6,8 +6,8 @@
 - [1. 简介]()
 - [2. 数据集和复现精度]()
 - [3. 准备数据与环境]()
-    - [3.1 准备数据]()
-    - [3.2 准备环境]()
+    - [3.1 准备环境]()
+    - [3.2 准备数据]()
     - [3.3 准备模型]()
 - [4. 开始使用]()
     - [4.1 模型训练]()
@@ -38,11 +38,14 @@ AlexNet是2012年ImageNet竞赛冠军获得者Hinton和他的学生Alex Krizhevs
 
 **参考repo:** [https://github.com/pytorch/vision](https://github.com/pytorch/vision)
 
-**aistudio体验教程:** coming soon!
+
+在此感谢[vision](https://github.com/pytorch/vision)，提高了AlexNet论文复现的效率。
 
 ## 2. 数据集和复现精度
 
 数据集为ImageNet，训练集包含1281167张图像，验证集包含50000张图像。
+
+您可以从[ImageNet 官网](https://image-net.org/)申请下载数据。
 
 
 | 模型      | top1/5 acc (参考精度) | top1/5 acc (复现精度) | 下载链接 |

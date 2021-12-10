@@ -9,7 +9,6 @@ PaddleServing预测功能测试的主程序为`test_serving.sh`，可以测试�
 | 模型类型 |device | batchsize | tensorrt | mkldnn | cpu多线程 |
 |  ----   |  ---- |   ----   |  :----:  |   :----:   |  :----:  |
 | 正常模型 | GPU | 1/6 | - | - | - |
-| 正常模型 | CPU | 1/6 | - | fp32 | 支持 |
 
 ## 2. 测试流程
 
@@ -71,10 +70,10 @@ Run failed with command - xxxxx
 ...
 ```
 
-详细的预测结果会存在 test_tipc/output/ 文件夹下，例如`server_infer_gpu_usetrt_True_precision_fp16_batchsize_1.log`中会返回检测框的坐标:
+详细的预测结果会存在 test_tipc/output/ 文件夹下，例如`server_infer_gpu_pipeline_http_usetrt_null_precision_null_batchsize_1.log`中会返回类别ID以及置信度:
 
-```json
-{'err_no': 8, 'err_msg': "(data_id=0 log_id=10000) [alexnet|0] Failed to postprocess: 'save_infer_model/scale_0.tmp_1'", 'key': [], 'value': [], 'tensors': []}
+```
+{'err_no': 0, 'err_msg': '', 'key': ['class_id', 'prob'], 'value': ['[8]', '[0.99903536]'], 'tensors': []}
 ```
 
 ## 3. 更多教程

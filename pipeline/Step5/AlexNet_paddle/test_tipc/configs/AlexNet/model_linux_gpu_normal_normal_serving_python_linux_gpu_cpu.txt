@@ -1,0 +1,18 @@
+===========================serving_params===========================
+model_name:AlexNet
+python:python3.7
+trans_model:-m paddle_serving_client.convert
+--dirname:./alexnet_infer/
+--model_filename:inference.pdmodel
+--params_filename:inference.pdiparams
+--serving_server:./deploy/serving/alexnet_server
+--serving_client:./deploy/serving/alexnet_client
+serving_dir:./deploy/serving
+web_service:web_service.py
+op.alexnet.local_service_conf.devices:0
+null:null
+null:null
+null:null
+null:null
+pipline:pipeline_http_client.py
+--img-path:../../images/demo.jpg

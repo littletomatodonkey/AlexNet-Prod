@@ -33,6 +33,9 @@ Paddle Serving依托深度学习框架PaddlePaddle旨在帮助深度学习开发
 ```bash
 wget https://paddle-serving.bj.bcebos.com/test-dev/whl/paddle_serving_server_gpu-0.7.0.post102-py3-none-any.whl
 pip install paddle_serving_server_gpu-0.7.0.post102-py3-none-any.whl
+# 如果是cuda10.1环境，可以使用下面的命令安装paddle-serving-server
+# wget https://paddle-serving.bj.bcebos.com/test-dev/whl/paddle_serving_server_gpu-0.7.0.post101-py3-none-any.whl
+# pip install paddle_serving_server_gpu-0.7.0.post101-py3-none-any.whl
 
 wget https://paddle-serving.bj.bcebos.com/test-dev/whl/paddle_serving_client-0.7.0-cp37-none-any.whl
 pip install paddle_serving_client-0.7.0-cp37-none-any.whl
@@ -62,7 +65,7 @@ python -m paddle_serving_client.convert --dirname  ../../alexnet_infer/ --model_
 以下命令启动模型预测服务：
 
 ```bash
-python3 web_service.py &
+python3.7 web_service.py &
 ```
 
 服务启动成功的界面如下：
@@ -74,7 +77,7 @@ python3 web_service.py &
 以下命令通过客户端访问服务：
 
 ```
-python3 pipeline_http_client.py
+python3.7 pipeline_http_client.py
 ```
 如果访问成功，终端中的会输出如下内容。
 

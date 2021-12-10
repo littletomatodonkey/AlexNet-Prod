@@ -42,7 +42,7 @@ class AlexNetOp(Op):
         return {"input": input_imgs}, False, None, ""
 
     def postprocess(self, input_dicts, fetch_dict, data_id, log_id):
-        score_list = fetch_dict["save_infer_model/scale_0.tmp_1"]
+        score_list = list(fetch_dict.values())[0]
         result = {"class_id": [], "prob": []}
         for score in score_list:
             score = score.flatten()

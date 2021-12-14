@@ -56,13 +56,14 @@ def main(args):
     class_id = output.argmax()
     prob = output[class_id]
     print(f"class_id: {class_id}, prob: {prob}")
-    return output
+    return class_id, prob
 
 
 if __name__ == "__main__":
     args = get_args()
-    output = main(args)
+    class_id, prob = main(args)
 
     reprod_logger = ReprodLogger()
-    reprod_logger.add("output", output)
+    reprod_logger.add("class_id", np.array([class_id]))
+    reprod_logger.add("prob", np.array([prob]))
     reprod_logger.save("output_training_engine.npy")

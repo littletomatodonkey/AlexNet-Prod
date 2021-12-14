@@ -42,9 +42,6 @@ class InferenceEngine(object):
             config.enable_use_gpu(1000, 0)
         else:
             config.disable_gpu()
-            if args.use_mkldnn:
-                config.enable_mkldnn()
-                config.set_cpu_math_library_num_threads(args.cpu_threads)
 
         # enable memory optim
         config.enable_memory_optim()
@@ -101,13 +98,7 @@ def get_args(add_help=True):
     parser.add_argument(
         "--use-gpu", default=False, type=str2bool, help="use_gpu")
     parser.add_argument(
-        "--use-mkldnn", default=False, type=str2bool, help="use_mkldnn")
-    parser.add_argument(
-        "--min-subgraph-size", default=15, type=int, help="min_subgraph_size")
-    parser.add_argument(
         "--max-batch-size", default=16, type=int, help="max_batch_size")
-    parser.add_argument(
-        "--cpu-threads", default=10, type=int, help="cpu-threads")
     parser.add_argument("--batch-size", default=1, type=int, help="batch size")
 
     parser.add_argument(

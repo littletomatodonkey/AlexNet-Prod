@@ -17,7 +17,8 @@
     - [5.1 基于Inference的推理]()
     - [5.2 基于Serving的服务化部署]()
 - [6. TIPC自动化测试脚本]()
-- [7. 参考链接与文献]()
+- [7. LICENSE]()
+- [8. 参考链接与文献]()
 
 
 ## 1. 简介
@@ -243,7 +244,12 @@ Run successfully with command - python3.7 deploy/py_inference/infer.py --use-gpu
 * 如果运行失败，可以先根据报错的具体命令，自查下配置文件是否正确，如果无法解决，可以给Paddle提ISSUE：[https://github.com/PaddlePaddle/Paddle/issues/new/choose](https://github.com/PaddlePaddle/Paddle/issues/new/choose)；如果您在微信群里的话，也可以在群里及时提问。
 
 
-## 7. 参考链接与文献
+## 7. LICENSE
+
+本项目的发布受[Apache 2.0 license](./LICENSE)许可认证。
+
+
+## 8. 参考链接与文献
 
 1. Krizhevsky A, Sutskever I, Hinton G E. Imagenet classification with deep convolutional neural networks[J]. Advances in neural information processing systems, 2012, 25: 1097-1105.
 2. vision: https://github.com/pytorch/vision

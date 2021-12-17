@@ -7,6 +7,9 @@ import os
 
 
 def get_args(add_help=True):
+    """
+    parse args
+    """
     import argparse
     parser = argparse.ArgumentParser(
         description='Paddle Serving', add_help=add_help)
@@ -27,8 +30,10 @@ def main(args):
     img_path = args.img_path
     with open(img_path, 'rb') as file:
         image_data1 = file.read()
+    # data should be transformed to the base64 format
     image = cv2_to_base64(image_data1)
     data = {"key": ["image"], "value": [image], "logid": logid}
+    # send requests
     r = requests.post(url=url, data=json.dumps(data))
     print(r.json())
 

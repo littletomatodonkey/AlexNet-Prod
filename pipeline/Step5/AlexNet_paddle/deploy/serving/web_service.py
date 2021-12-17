@@ -22,12 +22,19 @@ from preprocess_ops import ResizeImage, CenterCropImage, NormalizeImage, ToCHW, 
 
 
 class AlexNetOp(Op):
+    """
+    AlexNet service class
+    """
+
     def init_op(self):
         self.eval_transforms = Compose([
             ResizeImage(256), CenterCropImage(224), NormalizeImage(), ToCHW()
         ])
 
     def preprocess(self, input_dicts, data_id, log_id):
+        """
+        preprocess for the inputs (base64 type)
+        """
         (_, input_dict), = input_dicts.items()
         batch_size = len(input_dict.keys())
         imgs = []
@@ -42,6 +49,9 @@ class AlexNetOp(Op):
         return {"input": input_imgs}, False, None, ""
 
     def postprocess(self, input_dicts, fetch_dict, data_id, log_id):
+        """
+        postprocess for the service output
+        """
         score_list = list(fetch_dict.values())[0]
         result = {"class_id": [], "prob": []}
         for score in score_list:
@@ -56,11 +66,18 @@ class AlexNetOp(Op):
 
 
 class AlexNetService(WebService):
+    """
+    define the AlexNet service
+    """
+
     def get_pipeline_response(self, read_op):
         alexnet_op = AlexNetOp(name="alexnet", input_ops=[read_op])
         return alexnet_op
 
 
+# define the service class
 uci_service = AlexNetService(name="alexnet")
+# load config and prepare the service
 uci_service.prepare_pipeline_config("config.yml")
+# start the service
 uci_service.run_service()

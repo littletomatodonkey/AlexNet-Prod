@@ -36,6 +36,9 @@ class InferenceEngine(object):
         return
 
     def load_predictor(self, model_file_path, params_file_path):
+        """
+        initialize the inference engine
+        """
         args = self.args
         config = inference.Config(model_file_path, params_file_path)
         if args.use_gpu:
@@ -63,6 +66,7 @@ class InferenceEngine(object):
         return predictor, config, input_tensor, output_tensor
 
     def preprocess(self, img_path):
+        # preprocess for the input image path
         with open(img_path, "rb") as f:
             img = Image.open(f)
             img = img.convert("RGB")
@@ -71,13 +75,14 @@ class InferenceEngine(object):
         return img
 
     def postprocess(self, x):
+        # postprocess for the inference engine output
         x = x.flatten()
         class_id = x.argmax()
         prob = x[class_id]
         return class_id, prob
 
     def run(self, x):
-        # inference using inference engine
+        # inference process using inference engine
         self.input_tensor.copy_from_cpu(x)
         self.predictor.run()
         output = self.output_tensor.copy_to_cpu()
@@ -85,6 +90,9 @@ class InferenceEngine(object):
 
 
 def get_args(add_help=True):
+    """
+    parse args
+    """
     import argparse
 
     def str2bool(v):

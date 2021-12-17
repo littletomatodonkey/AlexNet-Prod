@@ -1,3 +1,17 @@
+# Copyright (c) 2021 PaddlePaddle Authors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import os
 import paddle
 from paddle import inference
@@ -9,7 +23,19 @@ from preprocess_ops import ResizeImage, CenterCropImage, NormalizeImage, ToCHW, 
 
 
 class InferenceEngine(object):
+    """InferenceEngine
+    
+    Inference engina class which contains preprocess, run, postprocess
+
+    """
+
     def __init__(self, args):
+        """
+        Args:
+            args: Parameters generated using argparser.
+
+        Returns: None
+        """
         super().__init__()
         self.args = args
 
@@ -36,8 +62,18 @@ class InferenceEngine(object):
         return
 
     def load_predictor(self, model_file_path, params_file_path):
-        """
+        """load_predictor
+
         initialize the inference engine
+
+        Args:
+            model_file_path: inference model path (*.pdmodel)
+            model_file_path: inference parmaeter path (*.pdiparams)
+        Return:
+            predictor: Predictor created using Paddle Inference.
+            config: Configuration of the predictor.
+            input_tensor: Input tensor of the predictor.
+            output_tensor: Output tensor of the predictor.
         """
         args = self.args
         config = inference.Config(model_file_path, params_file_path)
@@ -66,7 +102,15 @@ class InferenceEngine(object):
         return predictor, config, input_tensor, output_tensor
 
     def preprocess(self, img_path):
-        # preprocess for the input image path
+        """preprocess
+
+        Preprocess to the input.
+
+        Args:
+            img_path: Image path.
+
+        Returns: Input data after preprocess.
+        """
         with open(img_path, "rb") as f:
             img = Image.open(f)
             img = img.convert("RGB")
@@ -75,14 +119,30 @@ class InferenceEngine(object):
         return img
 
     def postprocess(self, x):
-        # postprocess for the inference engine output
+        """postprocess
+
+        Postprocess to the inference engine output.
+
+        Args:
+            x: Inference engine output.
+
+        Returns: Output data after argmax.
+        """
         x = x.flatten()
         class_id = x.argmax()
         prob = x[class_id]
         return class_id, prob
 
     def run(self, x):
-        # inference process using inference engine
+        """run
+
+        Inference process using inference engine.
+
+        Args:
+            x: Input data after preprocess.
+
+        Returns: Inference engine output
+        """
         self.input_tensor.copy_from_cpu(x)
         self.predictor.run()
         output = self.output_tensor.copy_to_cpu()
@@ -123,7 +183,17 @@ def get_args(add_help=True):
 
 
 def infer_main(args):
-    # init inference engine
+    """infer_main
+
+    Main inference function.
+
+    Args:
+        args: Parameters generated using argparser.
+
+    Returns:
+        class_id: Class index of the input.
+        prob: : Probability of the input.
+    """
     inference_engine = InferenceEngine(args)
 
     # init benchmark

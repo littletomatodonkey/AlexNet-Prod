@@ -22,8 +22,9 @@ from preprocess_ops import ResizeImage, CenterCropImage, NormalizeImage, ToCHW, 
 
 
 class AlexNetOp(Op):
-    """
-    AlexNet service class
+    """AlexNetOp
+    
+    AlexNet service op
     """
 
     def init_op(self):
@@ -32,8 +33,22 @@ class AlexNetOp(Op):
         ])
 
     def preprocess(self, input_dicts, data_id, log_id):
-        """
-        preprocess for the inputs (base64 type)
+        """preprocess
+        
+        In preprocess stage, assembling data for process stage. users can 
+        override this function for model feed features.
+
+        Args:
+            input_dicts: input data to be preprocessed
+            data_id: inner unique id, increase auto
+            log_id: global unique id for RTT, 0 default
+
+        Return:
+            output_data: data for process stage
+            is_skip_process: skip process stage or not, False default
+            prod_errcode: None default, otherwise, product errores occured.
+                          It is handled in the same way as exception. 
+            prod_errinfo: "" default
         """
         (_, input_dict), = input_dicts.items()
         batch_size = len(input_dict.keys())
@@ -49,8 +64,20 @@ class AlexNetOp(Op):
         return {"input": input_imgs}, False, None, ""
 
     def postprocess(self, input_dicts, fetch_dict, data_id, log_id):
-        """
-        postprocess for the service output
+        """postprocess
+
+        In postprocess stage, assemble data for next op or output.
+        Args:
+            input_data: data returned in preprocess stage, dict(for single predict) or list(for batch predict)
+            fetch_data: data returned in process stage, dict(for single predict) or list(for batch predict)
+            data_id: inner unique id, increase auto
+            log_id: logid, 0 default
+
+        Returns: 
+            fetch_dict: fetch result must be dict type.
+            prod_errcode: None default, otherwise, product errores occured.
+                          It is handled in the same way as exception.
+            prod_errinfo: "" default
         """
         score_list = list(fetch_dict.values())[0]
         result = {"class_id": [], "prob": []}
@@ -66,8 +93,9 @@ class AlexNetOp(Op):
 
 
 class AlexNetService(WebService):
-    """
-    define the AlexNet service
+    """AlexNetService
+    
+    AlexNet service class.
     """
 
     def get_pipeline_response(self, read_op):

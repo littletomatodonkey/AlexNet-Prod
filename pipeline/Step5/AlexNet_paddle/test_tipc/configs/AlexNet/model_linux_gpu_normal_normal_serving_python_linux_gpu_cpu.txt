@@ -5,9 +5,9 @@ trans_model:-m paddle_serving_client.convert
 --dirname:./alexnet_infer/
 --model_filename:inference.pdmodel
 --params_filename:inference.pdiparams
---serving_server:./deploy/serving/alexnet_server
---serving_client:./deploy/serving/alexnet_client
-serving_dir:./deploy/serving
+--serving_server:./deploy/serving_python/alexnet_server
+--serving_client:./deploy/serving_python/alexnet_client
+serving_dir:./deploy/serving_python
 web_service:web_service.py
 op.alexnet.local_service_conf.devices:0
 null:null

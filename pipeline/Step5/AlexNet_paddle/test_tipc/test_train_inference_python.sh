@@ -192,7 +192,6 @@ function func_inference(){
                         set_benchmark=$(func_set_params "${benchmark_key}" "${benchmark_value}")
                         set_batchsize=$(func_set_params "${batch_size_key}" "${batch_size}")
                         set_tensorrt=$(func_set_params "${use_trt_key}" "${use_trt}")
-                        echo "gry: ${set_tensorrt}, ${use_trt_key}, ${use_trt}"
                         set_precision=$(func_set_params "${precision_key}" "${precision}")
                         set_model_dir=$(func_set_params "${infer_model_key}" "${_model_dir}")
                         set_infer_params0=$(func_set_params "${save_log_key}" "${save_log_value}")

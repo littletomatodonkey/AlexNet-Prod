@@ -53,7 +53,7 @@ Serving部署依赖于`jit.save`得到的Inference模型，如果没有Inference
 并使用下面命令，将静态图模型转换为服务化部署模型，即`alexnet_server`文件夹中的模型。
 
 ```python
-cd deploy/serving
+cd deploy/serving_python
 python -m paddle_serving_client.convert --dirname  ../../alexnet_infer/ --model_filename inference.pdmodel --params_filename inference.pdiparams --serving_server alexnet_server --serving_client alexnet_client
 ```
 

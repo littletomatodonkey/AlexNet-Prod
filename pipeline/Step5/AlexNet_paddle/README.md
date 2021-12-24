@@ -191,7 +191,7 @@ alexnet_infer
 
 
 ```bash
-python deploy/inference/python/infer.py --model-dir=./alexnet_infer/ --img-path=./images/demo.jpg
+python deploy/inference_python/infer.py --model-dir=./alexnet_infer/ --img-path=./images/demo.jpg
 ```
 
 对于下面的图像进行预测
@@ -211,7 +211,7 @@ image_name: ./images/demo.jpg, class_id: 8, prob: 0.9990355968475342
 
 ### 5.2 基于Serving的服务化部署
 
-Serving部署教程可参考：[链接](deploy/serving/README.md)。
+Serving部署教程可参考：[链接](deploy/serving_python/README.md)。
 
 
 ## 6. TIPC自动化测试脚本

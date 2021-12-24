@@ -170,44 +170,7 @@ python tools/predict.py --pretrained=./alexnet_paddle.pdparams --model=alexnet -
 
 ### 5.1 基于Inference的推理
 
-#### 5.1.1 模型动转静导出
-
-使用下面的命令完成`AlexNet`模型的动转静导出。
-
-```bash
-python tools/export_model.py --pretrained=./alexnet_pretrained.pdparams --save-inference-dir="./alexnet_infer" --model=alexnet
-```
-
-最终在`alexnet_infer/`文件夹下会生成下面的3个文件。
-
-```
-alexnet_infer
-     |----inference.pdiparams     : 模型参数文件
-     |----inference.pdmodel       : 模型结构文件
-     |----inference.pdiparams.info: 模型参数信息文件
-```
-
-#### 5.1.2 模型推理
-
-
-```bash
-python deploy/inference_python/infer.py --model-dir=./alexnet_infer/ --img-path=./images/demo.jpg
-```
-
-对于下面的图像进行预测
-
-<div align="center">
-    <img src="./images/demo.jpg" width=300">
-</div>
-
-在终端中输出结果如下。
-
-```
-image_name: ./images/demo.jpg, class_id: 8, prob: 0.9990355968475342
-```
-
-表示预测的类别ID是`8`，置信度为`0.999`，该结果与基于训练引擎的结果完全一致。
-
+Inference推理教程可参考：[链接](./deploy/inference_python/README.md)。
 
 ### 5.2 基于Serving的服务化部署
 

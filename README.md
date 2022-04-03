@@ -53,3 +53,7 @@ print(torch.Tensor([1.0]))
 # 期望输出为 tensor([1.], device='cuda:0')
 print(torch.Tensor([1.0]).cuda())
 ```
+
+# Reference
+
+* torchvision：https://github.com/pytorch/vision （该项目中AlexNet的参考实现来源）
